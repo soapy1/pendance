@@ -2,6 +2,12 @@
  * TODO: 
  * - don't go into other mode after being in red mode
  * - click buttons in succession from green mode to get to red mode
+ * - automatic activation of red mode activated after 15 s (from yellow mode)
+ *     - click reset button to reset timer
+ *     - if timer runs out activate red mode
+ 
+ * - use one led
+ * - flash led when time is running out (blink at 5 s)
  */
 
 int slide_g = 8;
