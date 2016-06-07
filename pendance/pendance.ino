@@ -25,6 +25,8 @@ unsigned long yellow_mode_start_time = 0;
 volatile int num_panic = 0;
 int PANIC_TRIGGER = 3;
 
+int reset_steps = 0;
+
 void setup() {
   pinMode(slide_g, INPUT);
   pinMode(slide_y, INPUT);  
@@ -38,19 +40,32 @@ void setup() {
 }
 
 void loop() {
-  if ((green_mode == false) && (digitalRead(slide_g) == LOW)){
-    enable_green_mode();
-  }else if ((yellow_mode == false) && (digitalRead(slide_y) == LOW)){
-    enable_yellow_mode();
-  }
-  
-  if (yellow_mode == true) {
-    if (millis() > (yellow_mode_start_time + yellow_mode_count_down)) {
-      enable_panic_mode(); 
-    } else if (activate_warning() == true) {
-      Serial.println("yellow mode warning");
-      blink_light(1);
+  if (red_mode == false) {
+    if ((green_mode == false) && (digitalRead(slide_g) == LOW)){
+      enable_green_mode();
+    }else if ((yellow_mode == false) && (digitalRead(slide_y) == LOW)){
+      enable_yellow_mode();
     }
+    
+    if (yellow_mode == true) {
+      if (millis() > (yellow_mode_start_time + yellow_mode_count_down)) {
+        enable_panic_mode(); 
+      } else if (activate_warning() == true) {
+        Serial.println("yellow mode warning");
+        blink_light(1);
+      }
+    }
+  } else if (red_mode == true) {
+     if ((digitalRead(slide_y) == LOW) && (reset_steps == 0)) {
+       reset_steps = 1;
+     }
+     if ((digitalRead(slide_g) == LOW) && (reset_steps == 1)) {
+       reset_steps = 2;
+     }
+     if (reset_steps == 2) {
+       enable_green_mode();
+       reset_steps = 0;
+     }
   }
 }
 
