@@ -90,6 +90,7 @@ void reset() {
 }
 
 void enable_panic_mode() {
+  blink_light(3);
   num_panic = 0;
   red_mode = true;
   green_mode = false;
