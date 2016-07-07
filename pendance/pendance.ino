@@ -1,7 +1,5 @@
 /*
  * TODO: 
- * - yellow mode warning happens every 5 seconds
- *     - display the amount of time (would be nice)
  * - when swtiched to red have a 3 quick buzzes
  * 
  */
@@ -18,6 +16,7 @@ int red_mode = false;
 
 int yellow_mode_count_down = 15000; // 15 seconds
 int yellow_mode_blink_count_down = 5000; // 5 seconds
+int num_yellow_mode_bink_count = yellow_mode_count_down/yellow_mode_blink_count_down; // 3 times
 unsigned long yellow_mode_start_time = 0;
 
 volatile int num_panic = 0;
@@ -68,8 +67,11 @@ void loop() {
 }
 
 boolean activate_warning(){
-  if ((millis() > (yellow_mode_start_time + yellow_mode_blink_count_down)) && (millis() < (yellow_mode_start_time + yellow_mode_blink_count_down+100))) {
-    return true;
+  for (int i=1; i<=num_yellow_mode_bink_count; i++){
+    if ((millis() > (yellow_mode_start_time + (i*yellow_mode_blink_count_down))) && (millis() < (yellow_mode_start_time + (i*yellow_mode_blink_count_down)+100))) {
+      return true;
+      Serial.println("warning no" + i);
+    }
   }
   return false;
 }
