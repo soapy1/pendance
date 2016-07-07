@@ -100,6 +100,7 @@ void enable_panic_mode() {
 }
 
 void enable_yellow_mode() {
+  blink_light(1);
   PANIC_TRIGGER = 1; 
   yellow_mode = true;
   green_mode = false;
