@@ -1,9 +1,7 @@
 /*
  * TODO: 
- * - buzz on move to yellow mode
  * - yellow mode warning happens every 5 seconds
  *     - display the amount of time (would be nice)
- * - switch to red mode in 15 sec
  * - when swtiched to red have a 3 quick buzzes
  * 
  */
@@ -19,7 +17,7 @@ int yellow_mode = false;
 int red_mode = false;
 
 int yellow_mode_count_down = 15000; // 15 seconds
-int yellow_mode_blink_count_down = 10000; // 5 seconds
+int yellow_mode_blink_count_down = 5000; // 5 seconds
 unsigned long yellow_mode_start_time = 0;
 
 volatile int num_panic = 0;
