@@ -69,8 +69,8 @@ void loop() {
 boolean activate_warning(){
   for (int i=1; i<=num_yellow_mode_bink_count; i++){
     if ((millis() > (yellow_mode_start_time + (i*yellow_mode_blink_count_down))) && (millis() < (yellow_mode_start_time + (i*yellow_mode_blink_count_down)+100))) {
+      Serial.println("warning no " + i);
       return true;
-      Serial.println("warning no" + i);
     }
   }
   return false;
@@ -90,13 +90,13 @@ void reset() {
 }
 
 void enable_panic_mode() {
-  blink_light(3);
-  num_panic = 0;
   red_mode = true;
   green_mode = false;
   yellow_mode = false;
-  // TODO: panic 
+  num_panic = 0;
   Serial.println("enabling red mode");
+  blink_light(7);
+  // TODO: panic
 }
 
 void enable_yellow_mode() {
@@ -123,6 +123,15 @@ void blink_light(int times) {
     delay(1000);
     digitalWrite(led, LOW);
     delay(1000); 
+  }
+}
+
+void blink_light(int blink_length_high, int blink_length_low, int times) {
+  for (int i=0; i<times; i++) {
+    digitalWrite(led, HIGH);
+    delay(blink_length_high);
+    digitalWrite(led, LOW);
+    delay(blink_length_low); 
   }
 }
 
