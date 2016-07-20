@@ -22,6 +22,7 @@ unsigned long yellow_mode_start_time = 0;
 volatile int num_panic = 0;
 int PANIC_TRIGGER = 3;
 
+volatile boolean signal_red = false;
 int reset_steps = 0;
 
 void setup() {
@@ -37,6 +38,12 @@ void setup() {
 }
 
 void loop() {
+  if (signal_red == true){
+      panic_pattern();
+      signal_red = false;
+      enable_panic_mode();
+  }
+     
   if (red_mode == false) {
     if ((green_mode == false) && (digitalRead(slide_g) == LOW)){
       enable_green_mode();
@@ -46,13 +53,14 @@ void loop() {
     
     if (yellow_mode == true) {
       if (millis() > (yellow_mode_start_time + yellow_mode_count_down)) {
+        panic_pattern();
         enable_panic_mode(); 
       } else if (activate_warning() == true) {
         Serial.println("yellow mode warning");
         blink_light(1);
       }
     }
-  } else if (red_mode == true) {
+  } else if (red_mode == true) {  
      if ((digitalRead(slide_y) == LOW) && (reset_steps == 0)) {
        reset_steps = 1;
      }
@@ -69,7 +77,6 @@ void loop() {
 boolean activate_warning(){
   for (int i=1; i<=num_yellow_mode_bink_count; i++){
     if ((millis() > (yellow_mode_start_time + (i*yellow_mode_blink_count_down))) && (millis() < (yellow_mode_start_time + (i*yellow_mode_blink_count_down)+100))) {
-      Serial.println("warning no " + i);
       return true;
     }
   }
@@ -79,7 +86,8 @@ boolean activate_warning(){
 void panic() {
   num_panic++;
   if (num_panic == PANIC_TRIGGER) {
-    enable_panic_mode();
+    signal_red = true;
+//    enable_panic_mode();
   }
 }
 
@@ -90,13 +98,11 @@ void reset() {
 }
 
 void enable_panic_mode() {
+  num_panic = 0;
   red_mode = true;
   green_mode = false;
   yellow_mode = false;
-  num_panic = 0;
   Serial.println("enabling red mode");
-  blink_light(7);
-  // TODO: panic
 }
 
 void enable_yellow_mode() {
@@ -115,6 +121,10 @@ void enable_green_mode() {
   yellow_mode = false;
   red_mode = false;
   Serial.println("enabling green mode");
+}
+
+void panic_pattern(){
+  blink_light(1000, 500, 3);
 }
 
 void blink_light(int times) {
